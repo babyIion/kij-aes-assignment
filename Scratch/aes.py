@@ -1,3 +1,5 @@
+import numpy as np
+
 sbox = (
     0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
     0xCA, 0x82, 0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C, 0xA4, 0x72, 0xC0,
@@ -44,9 +46,6 @@ rcon = (
 )
 
 xtime = lambda a: (((a << 1) ^ 0x1B) & 0xFF) if (a & 0x80) else (a << 1)
-
-# def xtime(a):
-#     (((a << 1) ^ 0x1B) & 0xFF) if (a & 0x80) else (a << 1)
 
 def sub_bytes(s):
     for i in range(4):
@@ -119,8 +118,9 @@ def matrix_to_text(matrix):
             text |= (matrix[i][j] << (120 - 8 * (4 * i + j)))
     return text
 
-class AES(object):
-    def __init__(self, master_key):
+class AES():
+    def __init__(self):
+        master_key = 0x337436773979244226452948404D6351
         self.key_expansion(master_key)
 
     def key_expansion(self, master_key):
@@ -184,6 +184,7 @@ class AES(object):
         inv_mix_columns(state_matrix)
         inv_shift_rows(state_matrix)
         inv_sub_bytes(state_matrix)
+
 
 
 
