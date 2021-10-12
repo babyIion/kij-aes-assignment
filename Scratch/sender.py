@@ -2,8 +2,6 @@ import socket
 import sys
 import os
 from datetime import datetime
-
-import random
 from sys import getsizeof
 from aes import AES
 
@@ -27,18 +25,8 @@ def start():
 
             # print("File Path: ", file_path)
 
-            start_time = datetime.now()
-
-            # Generate random key
-            master_key = int(hex(random.getrandbits(128)), 16)
-            print(type(master_key))
-
-            name_key_out = "receiver.pem"
-            file_out = open(name_key_out, "wb")
-            file_out.write((master_key).to_bytes(16, byteorder='big', signed=False))
-            file_out.close()
-
-            aes = AES(master_key)
+            # The key is built inside the AES implementation
+            aes = AES()
 
             with open(file_path, 'rb') as file:
                 data_string = file.read()
@@ -48,6 +36,8 @@ def start():
                 print(type(data_string))
 
                 data_string = int.from_bytes(data_string, "big")
+
+            start_time = datetime.now()
 
             # Encrypt the data
             encrypted = aes.encrypt(data_string)
@@ -63,10 +53,6 @@ def start():
             print(name_file_out)
             client_socket.send(bytes(name_file_out, 'utf-8'))
             print("File has been sent")
-
-            client_socket.send(bytes(name_key_out, 'utf-8'))
-            print("Key has been sent")
-
             client_socket.shutdown(socket.SHUT_WR)
 
             received_data = client_socket.recv(1024).decode('utf-8')
