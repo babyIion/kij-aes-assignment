@@ -4,6 +4,7 @@ import sys
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import AES, PKCS1_OAEP
 from base64 import b64encode
+from datetime import datetime
 
 server_address = ('0.0.0.0', 6666)
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -35,7 +36,9 @@ try:
 
                     # Store the encrypted file
                     enc_session_key, nonce, tag, ciphertext = [ file_in.read(x) for x in (private_key.size_in_bytes(), 16, 16, -1) ]
-                    print(b64encode(nonce).decode('utf-8'))
+                    # print(b64encode(nonce).decode('utf-8'))
+
+                    start_time = datetime.now()
 
                     # Decrypt the session key with the private RSA key
                     cipher_rsa = PKCS1_OAEP.new(private_key)
@@ -49,6 +52,9 @@ try:
                     d_filename = "decrypted_" + file_name.split('_', 1)[1]
                     with open(d_filename, 'wb') as df:
                         df.write(data)
+
+                    end_time = datetime.now()
+                    print("Duration of the decyrption is: {}".format(end_time - start_time))
 
                     # kirim pesan
                     message = "File has been received"

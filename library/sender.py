@@ -59,9 +59,12 @@ def start():
             # Encrypt the data (file) with the AES session key
             cipher_aes = AES.new(session_key, AES.MODE_EAX)
             ciphertext, tag = cipher_aes.encrypt_and_digest(data)
-            print(b64encode(cipher_aes.nonce).decode('utf-8'))
+            # print(b64encode(cipher_aes.nonce).decode('utf-8'))
             [ file_out.write(x) for x in (enc_session_key, cipher_aes.nonce, tag, ciphertext) ]
             file_out.close()
+
+            end_time = datetime.now()
+            print("Duration of the encryption is: {}".format(end_time - start_time))
 
             print(name_file_out)
             client_socket.send(bytes(name_file_out, 'utf-8'))
@@ -71,8 +74,8 @@ def start():
             received_data = client_socket.recv(1024).decode('utf-8')
             print(received_data)
 
-            end_time = datetime.now()
-            print("Duration: {}".format(end_time - start_time))
+            # end_time = datetime.now()
+            # print("Duration: {}".format(end_time - start_time))
 
             client_socket.close()
             
